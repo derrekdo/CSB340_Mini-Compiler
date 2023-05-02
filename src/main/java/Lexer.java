@@ -73,6 +73,16 @@ public class Lexer {
         this.keywords.put("while", TokenType.Keyword_while);
 
     }
+
+    /**
+     * determines the operator type of the current token based on the second operator character following it
+     * @param expect the second operator in the token
+     * @param ifyes the token type if the second character is the expected operator
+     * @param ifno the token type if not
+     * @param line the current line in the file
+     * @param pos the current position in the line
+     * @return a new token object,  with token type of either of the inputs
+     */
     Token follow(char expect, TokenType ifyes, TokenType ifno, int line, int pos) {
         if (getNextChar() == expect) {
             getNextChar();
@@ -83,25 +93,43 @@ public class Lexer {
         }
         return new Token(ifno, "", line, pos);
     }
+
+    /**
+     * finds the ascii value of the character
+     * @param line the current line in the file
+     * @param pos the current position in the line
+     * @return new token object of type integer, and the ascii value
+     */
     Token char_lit(int line, int pos) { // handle character literals
         char c = getNextChar(); // skip opening quote
         int n = (int)c;
-        // TODO: code here
         getNextChar();
 
         return new Token(TokenType.Integer, "" + n, line, pos);
     }
-    Token string_lit(char start, int line, int pos) { // handle string literals
+
+    /**
+     * builds the entire string within the quotation marks
+     * @param line the current line the file
+     * @param pos the current position in the line
+     * @return new token object with token type string
+     */
+    Token string_lit(int line, int pos) { // handle string literals
         String result = "";
-        // TODO: code here
         while (getNextChar() != '\"') {
             result += chr;
         }
         return new Token(TokenType.String, result, line, pos);
     }
-    Token div_or_comment(int line, int pos) { // handle division or comments
-        // TODO: code here
 
+    /**
+     * determines if the current character is being used as a comment or division operator
+     * Ignores the entire commment
+     * @param line current line in  file
+     * @param pos current position in line
+     * @return new token object with token type divide
+     */
+    Token div_or_comment(int line, int pos) { // handle division or comments
         chr = getNextChar();
         if (Character.isWhitespace(chr) || isNumber(chr)) {
             return new Token(TokenType.Op_divide, "", line, pos);
@@ -118,6 +146,12 @@ public class Lexer {
         return getToken();
     }
 
+    /**
+     * determines if the character is being used as a negate or subtract operator
+     * @param line the current line in file
+     * @param pos the current postion in the line
+     * @return new token object of eithe token type negate or subtract
+     */
     Token negate_or_subtract(int line, int pos) {
         if (Character.isWhitespace(getNextChar())) {
             return new Token(TokenType.Op_subtract, "", line, pos);
@@ -125,9 +159,14 @@ public class Lexer {
         return new Token(TokenType.Op_negate, "", line, pos);
     }
 
+    /**
+     * checks if the current char is part of an identifier, keyword, or an integer
+     * @param line the current line in the file
+     * @param pos the current position on the line
+     * @return new token object with a token type of keyword or identifier or integer
+     */
     Token identifier_or_integer(int line, int pos) { // handle identifiers and integers
         String text = "";
-        // TODO: code here
         if (isLetter(chr)) {
             while (!Character.isWhitespace(chr)) {
                 text += chr;
@@ -173,6 +212,10 @@ public class Lexer {
         return 47 < (int) chr && (int) chr < 58;
     }
 
+    /**
+     * checks the current char and determines which token type it is
+     * @return a new Token object for current token
+     */
     Token getToken() {
         int line, pos;
         while (Character.isWhitespace(this.chr)) {
@@ -181,7 +224,6 @@ public class Lexer {
         line = this.line;
         pos = this.pos;
 
-        // TODO: switch statement on character for all forms of tokens with return to follow.... one example left for you
         switch (this.chr) {
             case '\u0000': return new Token(TokenType.End_of_input, "", this.line, this.pos);
             // remaining case statements -,",',.
@@ -220,7 +262,7 @@ public class Lexer {
 
             case ',' : return new Token(TokenType.Comma, "", line, pos);
 
-            case '\"' : return string_lit(chr, line, pos);
+            case '\"' : return string_lit(line, pos);
 
             case '\'' : return char_lit(line, pos);
 
@@ -238,6 +280,11 @@ public class Lexer {
         this.chr = s.charAt(this.position);
     }
 
+    /**
+     * checks the next character in the file
+     * and increments the position in the file and position in each line
+     * @return the next character
+     */
     char getNextChar() {
         // get next character
         this.pos++;
@@ -268,6 +315,11 @@ public class Lexer {
         return sb.toString();
     }
 
+    /**
+     * writes the token, token type, line, and line position of all tokens in a file to a .lex file
+     * @param result the .lex file
+     * @param fileName the current input file
+     */
     static void outputToFile(String result, String fileName) {
         try {
             FileWriter myWriter = new FileWriter("src/main/resources/" + fileName + ".lex");
@@ -280,6 +332,7 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
+        //Array list of each file to be used as input
         ArrayList<String> files = new ArrayList<>();
         files.add("fizzbuzz"); files.add("prime"); files.add("99bottles");
         files.add("file1"); files.add("file2");
