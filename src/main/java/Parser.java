@@ -2,15 +2,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.StringTokenizer;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 class Parser {
-    private List<Token> source;
+    private final List<Token> source;
     private Token token;
     private int position;
 
@@ -125,6 +120,13 @@ class Parser {
         @Override
         public String toString() { return this.name; }
     }
+
+    /**
+     * Print error message.
+     * @param line - line.
+     * @param pos - position.
+     * @param msg - message.
+     */
     static void error(int line, int pos, String msg) {
         if (line > 0 && pos > 0) {
             System.out.printf("%s in line %d, pos %d\n", msg, line, pos);
@@ -133,28 +135,96 @@ class Parser {
         }
         System.exit(1);
     }
+
+    /**
+     * Constructor for Parser class.
+     * @param source - list of tokens.
+     */
     Parser(List<Token> source) {
         this.source = source;
         this.token = null;
         this.position = 0;
     }
+
+    /**
+     * Get the next token in the list.
+     * @return - Token
+     */
     Token getNextToken() {
         this.token = this.source.get(this.position++);
         return this.token;
     }
-    Node expr(int p) {
-        // create nodes for token types such as LeftParen, Op_add, Op_subtract, etc.
-        // be very careful here and be aware of the precendence rules for the AST tree
-        Node result = null, node;
 
+    /**
+     * create nodes for token types such as LeftParen, Op_add, Op_subtract, etc.
+     * @param precedence - int
+     * @return - Node
+     */
+    Node expr(int precedence) {
+        // create nodes for token types such as LeftParen, Op_add, Op_subtract, etc.
+        // TODO: be very careful here and be aware of the precedence rules for the AST tree
+        Node result = null;
+        Node node = null;
+        TokenType op = null;
+        int opPrecedence = 0;
+
+        if (this.token.tokentype == TokenType.LeftParen) {
+            result = parenExpr();
+        } else if (this.token.tokentype == TokenType.Op_subtract || this.token.tokentype == TokenType.Op_add) {
+            op = this.token.tokentype == TokenType.Op_subtract ? TokenType.Op_negate : TokenType.Op_add;
+            getNextToken();
+            node = expr(TokenType.Op_negate.getPrecedence());
+            if (op == TokenType.Op_negate) {
+                result = Node.make_node(NodeType.nd_Negate, node);
+            } else {
+                result = node;
+            }
+        } else if (this.token.tokentype == TokenType.Op_not) {
+            getNextToken();
+            result = Node.make_node(NodeType.nd_Not, expr(TokenType.Op_not.getPrecedence()));
+        } else if (this.token.tokentype == TokenType.Identifier) {
+            result = Node.make_leaf(NodeType.nd_Ident, this.token.value);
+            getNextToken();
+        } else if (this.token.tokentype == TokenType.Integer) {
+            result = Node.make_leaf(NodeType.nd_Integer, this.token.value);
+            getNextToken();
+        } else {
+            error(this.token.line, this.token.pos, this.token.value);
+        }
+
+        while (this.token.tokentype.isBinary() && this.token.tokentype.getPrecedence() >= precedence) {
+            op = this.token.tokentype;
+            getNextToken();
+            opPrecedence = this.token.tokentype.getPrecedence();
+
+            if (!op.isRightAssoc()) {
+                opPrecedence++;
+            }
+
+            node = expr(opPrecedence);
+            result = Node.make_node(op.node_type, result, node);
+        }
         return result;
     }
-    Node paren_expr() {
+
+    /**
+     * Handles left and right parenthesis and braces.
+     * @return - Node
+     */
+    Node parenExpr() {
+        Node node = null;
         expect("paren_expr", TokenType.LeftParen);
-        Node node = expr(0);
+        node = expr(0);
         expect("paren_expr", TokenType.RightParen);
         return node;
     }
+
+    /**
+     * Error handler for checking tokens.
+     * Check if token is the right type and if not raise an error.
+     * @param msg - string message passed to error handler.
+     * @param s - TokenType
+     */
     void expect(String msg, TokenType s) {
         if (this.token.tokentype == s) {
             getNextToken();
@@ -162,13 +232,82 @@ class Parser {
         }
         error(this.token.line, this.token.pos, msg + ": Expecting '" + s + "', found: '" + this.token.tokentype + "'");
     }
+
+    /**
+     * Handles TokenTypes such as Keyword_if, Keyword_else, nd_If, Keyword_print, etc.
+     * @return - Node
+     */
     Node stmt() {
-        // this one handles TokenTypes such as Keyword_if, Keyword_else, nd_If, Keyword_print, etc.
-        // also handles while, end of file, braces
-        Node s, s2, t = null, e, v;
+        Node s, s2, t = null, expression, value;
+
+        if (this.token.tokentype == TokenType.Keyword_if) {
+            getNextToken();
+            expression = parenExpr();
+            s = stmt();
+            s2 = null;
+            if (this.token.tokentype == TokenType.Keyword_else) {
+                getNextToken();
+                s2 = stmt();
+            }
+            t = Node.make_node(NodeType.nd_If, expression, Node.make_node(NodeType.nd_If, s, s2));
+        } else if (this.token.tokentype == TokenType.Keyword_putc) {
+            getNextToken();
+            expression = parenExpr();
+            t = Node.make_node(NodeType.nd_Prtc, expression);
+            expect(TokenType.Keyword_putc.name(), TokenType.Semicolon);
+        } else if (this.token.tokentype == TokenType.Keyword_print) {
+            getNextToken();
+            expect(TokenType.Keyword_print.name(), TokenType.LeftParen);
+            while (true) {
+                if (this.token.tokentype == TokenType.String) {
+                    expression = Node.make_node(NodeType.nd_Prts, Node.make_leaf(NodeType.nd_String, this.token.value));
+                    getNextToken();
+                } else {
+                    expression = Node.make_node(NodeType.nd_Prti, expr(0));
+                }
+
+                t = Node.make_node(NodeType.nd_Sequence, t, expression);
+
+                if (this.token.tokentype != TokenType.Comma) {
+                    break;
+                }
+                getNextToken();
+            }
+            expect(TokenType.Keyword_print.name(), TokenType.RightParen);
+            expect(TokenType.Keyword_print.name(), TokenType.Semicolon);
+        } else if (this.token.tokentype == TokenType.Semicolon) {
+            getNextToken();
+        } else if (this.token.tokentype == TokenType.Identifier) {
+            value = Node.make_leaf(NodeType.nd_Ident, this.token.value);
+            getNextToken();
+            expect(TokenType.Op_assign.name(), TokenType.Op_assign);
+            expression = expr(0);
+            t = Node.make_node(NodeType.nd_Assign, value, expression);
+            expect(TokenType.Op_assign.name(), TokenType.Semicolon);
+        } else if (this.token.tokentype == TokenType.Keyword_while) {
+            getNextToken();
+            expression = parenExpr();
+            s = stmt();
+            t = Node.make_node(NodeType.nd_While, expression, s);
+        } else if (this.token.tokentype == TokenType.LeftBrace) {
+            getNextToken();
+            while (this.token.tokentype != TokenType.RightBrace && this.token.tokentype != TokenType.End_of_input) {
+                t = Node.make_node(NodeType.nd_Sequence, t, stmt());
+            }
+            expect(TokenType.LeftBrace.name(), TokenType.RightBrace);
+        } else if (this.token.tokentype == TokenType.End_of_input) {
+            assert true;
+        } else {
+            error(this.token.line, this.token.pos, "Expected start of statement, instead found: " + this.token);
+        }
 
         return t;
     }
+
+    /**
+     * Parses token and returns a Node.
+     * @return - Node
+     */
     Node parse() {
         Node t = null;
         getNextToken();
@@ -177,9 +316,17 @@ class Parser {
         }
         return t;
     }
+
+    /**
+     * Print AST.
+     * @param t - Node.
+     * @param sb - StringBuilder.
+     * @return - String representation of AST.
+     */
     String printAST(Node t, StringBuilder sb) {
+//        System.out.println("In printAST");
         int i = 0;
-        if (t == null) {
+        if (t == null) { // TODO: anytime a null node is encountered it prints this semi colon so I have nulls when I shouldn't
             sb.append(";");
             sb.append("\n");
             System.out.println(";");
@@ -201,9 +348,9 @@ class Parser {
         return sb.toString();
     }
 
-    static void outputToFile(String result) {
+    static void outputToFile(String result) { // TODO: Add string filename as param
         try {
-            FileWriter myWriter = new FileWriter("src/main/resources/hello.par");
+            FileWriter myWriter = new FileWriter("src/main/resources/test_print.par");
             myWriter.write(result);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
@@ -212,24 +359,58 @@ class Parser {
         }
     }
 
+    static HashMap<String, TokenType> createStringToTokensMap() {
+        HashMap<String, TokenType> map = new HashMap<>();
+        map.put("Op_multiply", TokenType.Op_multiply);
+        map.put("Op_divide", TokenType.Op_divide);
+        map.put("Op_mod", TokenType.Op_mod);
+        map.put("Op_add", TokenType.Op_add);
+        map.put("Op_subtract", TokenType.Op_subtract);
+        map.put("Op_negate", TokenType.Op_negate);
+        map.put("Op_not", TokenType.Op_not);
+        map.put("Op_less", TokenType.Op_less);
+        map.put("Op_lessequal", TokenType.Op_lessequal);
+        map.put("Op_greater", TokenType.Op_greater);
+        map.put("Op_greaterequal", TokenType.Op_greaterequal);
+        map.put("Op_equal", TokenType.Op_equal);
+        map.put("Op_notequal", TokenType.Op_notequal);
+        map.put("Op_assign", TokenType.Op_assign);
+        map.put("Op_and", TokenType.Op_and);
+        map.put("Op_or", TokenType.Op_or);
+        map.put("Keyword_if", TokenType.Keyword_if);
+        map.put("Keyword_else", TokenType.Keyword_else);
+        map.put("Keyword_while", TokenType.Keyword_while);
+        map.put("Keyword_print", TokenType.Keyword_print);
+        map.put("Keyword_putc", TokenType.Keyword_putc);
+        map.put("LeftParen", TokenType.LeftParen);
+        map.put("RightParen", TokenType.RightParen);
+        map.put("LeftBrace", TokenType.LeftBrace);
+        map.put("RightBrace", TokenType.RightBrace);
+        map.put("Semicolon", TokenType.Semicolon);
+        map.put("Comma", TokenType.Comma);
+        map.put("Identifier", TokenType.Identifier);
+        map.put("Integer", TokenType.Integer);
+        map.put("String", TokenType.String);
+        map.put("End_of_input", TokenType.End_of_input);
+        return map;
+    }
+
 
     public static void main(String[] args) {
-        if (1==1) {
+        if (args.length > 0) {
+            String filename = args[0];
             try {
-                String value, token;
-                String result = " ";
+                StringBuilder value;
+                String token;
+                String result = "";
                 StringBuilder sb = new StringBuilder();
                 int line, pos;
                 Token t;
                 boolean found;
                 List<Token> list = new ArrayList<>();
-                Map<String, TokenType> str_to_tokens = new HashMap<>();
+                Map<String, TokenType> str_to_tokens = createStringToTokensMap();
 
-
-                str_to_tokens.put("End_of_input", TokenType.End_of_input);
-                // finish creating your Hashmap. I left one as a model
-
-                Scanner s = new Scanner(new File("src/main/resources/hello.lex"));
+                Scanner s = new Scanner(new File("src/main/resources/" + filename));
                 String source = " ";
                 while (s.hasNext()) {
                     String str = s.nextLine();
@@ -237,21 +418,23 @@ class Parser {
                     line = Integer.parseInt(st.nextToken());
                     pos = Integer.parseInt(st.nextToken());
                     token = st.nextToken();
-                    value = "";
+                    value = new StringBuilder();
                     while (st.hasMoreTokens()) {
-                        value += st.nextToken() + " ";
+                        value.append(st.nextToken()).append(" ");
                     }
                     found = false;
                     if (str_to_tokens.containsKey(token)) {
                         found = true;
-                        list.add(new Token(str_to_tokens.get(token), value, line, pos));
+                        t = new Token(str_to_tokens.get(token), value.toString(), line, pos);
+                        list.add(t);
                     }
-                    if (found == false) {
+                    if (!found) {
                         throw new Exception("Token not found: '" + token + "'");
                     }
                 }
-                Parser p = new Parser(list);
-                result = p.printAST(p.parse(), sb);
+
+                Parser parser = new Parser(list);
+                result = parser.printAST(parser.parse(), sb);
                 outputToFile(result);
             } catch (FileNotFoundException e) {
                 error(-1, -1, "Exception: " + e.getMessage());
