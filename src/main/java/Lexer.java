@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -84,24 +86,93 @@ public class Lexer {
     Token char_lit(int line, int pos) { // handle character literals
         char c = getNextChar(); // skip opening quote
         int n = (int)c;
-        // code here
+        // TODO: code here
+        getNextChar();
+
         return new Token(TokenType.Integer, "" + n, line, pos);
     }
     Token string_lit(char start, int line, int pos) { // handle string literals
         String result = "";
-        // code here
+        // TODO: code here
+        while (getNextChar() != '\"') {
+            result += chr;
+        }
         return new Token(TokenType.String, result, line, pos);
     }
     Token div_or_comment(int line, int pos) { // handle division or comments
-        // code here
+        // TODO: code here
+
+        chr = getNextChar();
+        if (Character.isWhitespace(chr) || isNumber(chr)) {
+            return new Token(TokenType.Op_divide, "", line, pos);
+        }else if (chr == '/') {
+            while (getNextChar() != '\n') {
+                getNextChar();
+            }
+        }else {
+            while (chr != '/'){
+                getNextChar();
+            }
+        }
+        getNextChar();
         return getToken();
     }
-    Token identifier_or_integer(int line, int pos) { // handle identifiers and integers
-        boolean is_number = true;
-        String text = "";
-        // code here
-        return new Token(TokenType.Identifier, text, line, pos);
+
+    Token negate_or_subtract(int line, int pos) {
+        if (Character.isWhitespace(getNextChar())) {
+            return new Token(TokenType.Op_subtract, "", line, pos);
+        }
+        return new Token(TokenType.Op_negate, "", line, pos);
     }
+
+    Token identifier_or_integer(int line, int pos) { // handle identifiers and integers
+        String text = "";
+        // TODO: code here
+        if (isLetter(chr)) {
+            while (!Character.isWhitespace(chr)) {
+                text += chr;
+                getNextChar();
+                if (!isLetter(chr)) {
+                    prevChar();
+                    break;
+                }
+            }
+            if (keywords.containsKey(text)) {
+                return new Token(keywords.get(text), text, line, pos);
+            } else {
+                return new Token(TokenType.Identifier, text, line, pos);
+            }
+        }else if (isNumber(chr)){
+            while (!Character.isWhitespace(chr)) {
+                text += chr;
+                getNextChar();
+                if (!isNumber(chr)) {
+                    prevChar();
+                    break;
+                }
+            }
+        }
+        return new Token(TokenType.Integer, text, line, pos);
+    }
+
+    /**
+     * Determines if the current char is a letter, works for both upper and lower case
+     * @param chr the current char
+     * @return true if it is a letter, otherwise return false
+     */
+    boolean isLetter(char chr){
+        return (64 < (int) chr && (int) chr < 91) || (96 < (int) chr && (int) chr < 123);
+    }
+
+    /**
+     * Determines if the current char is a letter, works for both upper and lower case
+     * @param chr the current char
+     * @return true if it is a number, otherwise return false
+     */
+    boolean isNumber(char chr){
+        return 47 < (int) chr && (int) chr < 58;
+    }
+
     Token getToken() {
         int line, pos;
         while (Character.isWhitespace(this.chr)) {
@@ -110,18 +181,76 @@ public class Lexer {
         line = this.line;
         pos = this.pos;
 
-        // switch statement on character for all forms of tokens with return to follow.... one example left for you
-
+        // TODO: switch statement on character for all forms of tokens with return to follow.... one example left for you
         switch (this.chr) {
             case '\u0000': return new Token(TokenType.End_of_input, "", this.line, this.pos);
-            // remaining case statements
+            // remaining case statements -,",',.
+
+            case '*' : return new Token(TokenType.Op_multiply, "", line, pos);
+
+            case '/' : return div_or_comment(line, pos);
+
+            case '%' : return new Token(TokenType.Op_mod, "", line, pos);
+
+            case '+' : return new Token(TokenType.Op_add, "", line, pos);
+
+            case '-' : return negate_or_subtract(line, pos);
+
+            case '<' : return follow('=', TokenType.Op_lessequal, TokenType.Op_less, line, pos);
+
+            case '>' : return follow('=', TokenType.Op_greaterequal, TokenType.Op_greater, line, pos);
+
+            case '=' : return follow('=', TokenType.Op_equal, TokenType.Op_assign, line, pos);
+
+            case '!' : return follow('=', TokenType.Op_notequal, TokenType.Op_not, line, pos);
+
+            case '&' : return follow('&', TokenType.Op_and, TokenType.String, line, pos);
+
+            case '|' : return follow('|', TokenType.Op_or, TokenType.String, line, pos);
+
+            case '(' : return new Token(TokenType.LeftParen, "", line, pos);
+
+            case ')' : return new Token(TokenType.RightParen, "", line, pos);
+
+            case '{' : return new Token(TokenType.LeftBrace, "", line, pos);
+
+            case '}' : return new Token(TokenType.RightBrace, "", line, pos);
+
+            case ';' : return new Token(TokenType.Semicolon, "", line, pos);
+
+            case ',' : return new Token(TokenType.Comma, "", line, pos);
+
+            case '\"' : return string_lit(chr, line, pos);
+
+            case '\'' : return char_lit(line, pos);
 
             default: return identifier_or_integer(line, pos);
         }
     }
 
+    /**
+     * an additional getNextChar() is called when getToken() is called, to prevent infinite loop on operator tokens
+     * prevChar() is called to prevent skipping over a char in the file
+     */
+    void prevChar() {
+        this.position--;
+        this.pos--;
+        this.chr = s.charAt(this.position);
+    }
+
     char getNextChar() {
         // get next character
+        this.pos++;
+        this.position++;
+        if (this.position >= this.s.length()) {
+            this.chr = '\u0000';
+            return this.chr;
+        }
+        this.chr = this.s.charAt(this.position);
+        if (this.chr == '\n') {
+            this.line++;
+            this.pos = 0;
+        }
         return this.chr;
     }
 
@@ -129,6 +258,7 @@ public class Lexer {
         Token t;
         StringBuilder sb = new StringBuilder();
         while ((t = getToken()).tokentype != TokenType.End_of_input) {
+            getNextChar();
             sb.append(t);
             sb.append("\n");
             System.out.println(t);
@@ -138,9 +268,9 @@ public class Lexer {
         return sb.toString();
     }
 
-    static void outputToFile(String result) {
+    static void outputToFile(String result, String fileName) {
         try {
-            FileWriter myWriter = new FileWriter("src/main/resources/hello.lex");
+            FileWriter myWriter = new FileWriter("src/main/resources/" + fileName + ".lex");
             myWriter.write(result);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
@@ -150,26 +280,34 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        if (1==1) {
-            try {
+        ArrayList<String> files = new ArrayList<>();
+        files.add("fizzbuzz"); files.add("prime"); files.add("99bottles");
+        files.add("file1"); files.add("file2");
 
-                File f = new File("src/main/resources/hello.t");
-                Scanner s = new Scanner(f);
-                String source = " ";
-                String result = " ";
-                while (s.hasNext()) {
-                    source += s.nextLine() + "\n";
+        for (int i = 0; i < files.size(); i++) {
+            String fileName = files.get(i);
+
+            if (1==1) {
+                try {
+
+                    File f = new File("src/main/resources/" + fileName + ".c");
+                    Scanner s = new Scanner(f);
+                    String source = " ";
+                    String result = " ";
+                    while (s.hasNext()) {
+                        source += s.nextLine() + "\n";
+                    }
+                    Lexer l = new Lexer(source);
+                    result = l.printTokens();
+
+                    outputToFile(result, fileName);
+
+                } catch(FileNotFoundException e) {
+                    error(-1, -1, "Exception: " + e.getMessage());
                 }
-                Lexer l = new Lexer(source);
-                result = l.printTokens();
-
-                outputToFile(result);
-
-            } catch(FileNotFoundException e) {
-                error(-1, -1, "Exception: " + e.getMessage());
+            } else {
+                error(-1, -1, "No args");
             }
-        } else {
-            error(-1, -1, "No args");
         }
     }
 }
