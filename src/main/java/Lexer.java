@@ -91,6 +91,7 @@ public class Lexer {
         if (ifno == TokenType.End_of_input) {
             error(line, pos, String.format("follow: unrecognized character: (%d) '%c'", (int)this.chr, this.chr));
         }
+        prevChar();
         return new Token(ifno, "", line, pos);
     }
 
@@ -156,6 +157,7 @@ public class Lexer {
         if (Character.isWhitespace(getNextChar())) {
             return new Token(TokenType.Op_subtract, "", line, pos);
         }
+        prevChar();
         return new Token(TokenType.Op_negate, "", line, pos);
     }
 
@@ -336,7 +338,7 @@ public class Lexer {
         ArrayList<String> files = new ArrayList<>();
         files.add("fizzbuzz"); files.add("prime"); files.add("99bottles");
         files.add("file1"); files.add("file2");
-
+//        files.add("count");
         for (int i = 0; i < files.size(); i++) {
             String fileName = files.get(i);
 
