@@ -171,7 +171,7 @@ public class Lexer {
             while (!Character.isWhitespace(chr)) {
                 text += chr;
                 getNextChar();
-                if (!isLetter(chr)) {
+                if (!isLetter(chr) && !isNumber(chr)) {
                     prevChar();
                     break;
                 }
