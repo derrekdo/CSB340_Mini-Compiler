@@ -86,6 +86,7 @@ public class Lexer {
     Token follow(char expect, TokenType ifyes, TokenType ifno, int line, int pos) {
         if (getNextChar() == expect) {
             getNextChar();
+            prevChar();
             return new Token(ifyes, "", line, pos);
         }
         if (ifno == TokenType.End_of_input) {
@@ -132,7 +133,8 @@ public class Lexer {
      */
     Token div_or_comment(int line, int pos) { // handle division or comments
         chr = getNextChar();
-        if (Character.isWhitespace(chr) || isNumber(chr)) {
+        if (Character.isWhitespace(chr) || isNumber(chr) || isLetter(chr)) {
+            prevChar();
             return new Token(TokenType.Op_divide, "", line, pos);
         }else if (chr == '/') {
             while (getNextChar() != '\n') {
@@ -336,8 +338,11 @@ public class Lexer {
     public static void main(String[] args) {
         //Array list of each file to be used as input
         ArrayList<String> files = new ArrayList<>();
-        files.add("fizzbuzz"); files.add("prime"); files.add("99bottles");
-        files.add("file1"); files.add("file2");
+        files.add("fizzbuzz");
+        files.add("prime");
+        files.add("99bottles");
+        files.add("file1");
+        files.add("file2");
 //        files.add("count");
         for (int i = 0; i < files.size(); i++) {
             String fileName = files.get(i);
