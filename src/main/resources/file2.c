@@ -1,15 +1,11 @@
-char input = 'y';
-
-void start(char input) {
-    while (input == 'y') {
-        playGame()
+input = 'y';
+input = 2424265
+while (input == 'y') {
+    print("ok");
+    print("Starting")
+    if (input > 1531) {
+        input - 10 * (-2);
     }
 }
 
-char playGame() {
-    print("Game Starting")
-    for (int i = 0; i < 3; i++) {
-        print(" . . . ")
-    }
 
-}
