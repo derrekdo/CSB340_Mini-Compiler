@@ -42,4 +42,4 @@
     8     53 RightParen     
     8     54 Semicolon      
     9      1 RightBrace     
-   10      1 End_of_input   
+   10      1 End_of_input

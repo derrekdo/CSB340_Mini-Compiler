@@ -2,12 +2,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Lexer Class.
+ *
+ * @author (updated by) Derrek Do
+ */
 public class Lexer {
     private int line;
     private int pos;
@@ -22,9 +26,14 @@ public class Lexer {
         public String value;
         public int line;
         public int pos;
+
         Token(TokenType token, String value, int line, int pos) {
-            this.tokentype = token; this.value = value; this.line = line; this.pos = pos;
+            this.tokentype = token;
+            this.value = value;
+            this.line = line;
+            this.pos = pos;
         }
+
         @Override
         public String toString() {
             String result = String.format("%5d  %5d %-15s", this.line, this.pos, this.tokentype);
@@ -44,7 +53,7 @@ public class Lexer {
     }
 
     static enum TokenType {
-        End_of_input, Op_multiply,  Op_divide, Op_mod, Op_add, Op_subtract,
+        End_of_input, Op_multiply, Op_divide, Op_mod, Op_add, Op_subtract,
         Op_negate, Op_not, Op_less, Op_lessequal, Op_greater, Op_greaterequal,
         Op_equal, Op_notequal, Op_assign, Op_and, Op_or, Keyword_if,
         Keyword_else, Keyword_while, Keyword_print, Keyword_putc, LeftParen, RightParen,
@@ -76,11 +85,12 @@ public class Lexer {
 
     /**
      * determines the operator type of the current token based on the second operator character following it
+     *
      * @param expect the second operator in the token
-     * @param ifyes the token type if the second character is the expected operator
-     * @param ifno the token type if not
-     * @param line the current line in the file
-     * @param pos the current position in the line
+     * @param ifyes  the token type if the second character is the expected operator
+     * @param ifno   the token type if not
+     * @param line   the current line in the file
+     * @param pos    the current position in the line
      * @return a new token object,  with token type of either of the inputs
      */
     Token follow(char expect, TokenType ifyes, TokenType ifno, int line, int pos) {
@@ -90,7 +100,7 @@ public class Lexer {
             return new Token(ifyes, "", line, pos);
         }
         if (ifno == TokenType.End_of_input) {
-            error(line, pos, String.format("follow: unrecognized character: (%d) '%c'", (int)this.chr, this.chr));
+            error(line, pos, String.format("follow: unrecognized character: (%d) '%c'", (int) this.chr, this.chr));
         }
         prevChar();
         return new Token(ifno, "", line, pos);
@@ -98,13 +108,14 @@ public class Lexer {
 
     /**
      * finds the ascii value of the character
+     *
      * @param line the current line in the file
-     * @param pos the current position in the line
+     * @param pos  the current position in the line
      * @return new token object of type integer, and the ascii value
      */
     Token char_lit(int line, int pos) { // handle character literals
         char c = getNextChar(); // skip opening quote
-        int n = (int)c;
+        int n = (int) c;
         getNextChar();
 
         return new Token(TokenType.Integer, "" + n, line, pos);
@@ -112,8 +123,9 @@ public class Lexer {
 
     /**
      * builds the entire string within the quotation marks
+     *
      * @param line the current line the file
-     * @param pos the current position in the line
+     * @param pos  the current position in the line
      * @return new token object with token type string
      */
     Token string_lit(int line, int pos) { // handle string literals
@@ -127,8 +139,9 @@ public class Lexer {
     /**
      * determines if the current character is being used as a comment or division operator
      * Ignores the entire commment
+     *
      * @param line current line in  file
-     * @param pos current position in line
+     * @param pos  current position in line
      * @return new token object with token type divide
      */
     Token div_or_comment(int line, int pos) { // handle division or comments
@@ -136,12 +149,12 @@ public class Lexer {
         if (Character.isWhitespace(chr) || isNumber(chr) || isLetter(chr)) {
             prevChar();
             return new Token(TokenType.Op_divide, "", line, pos);
-        }else if (chr == '/') {
+        } else if (chr == '/') {
             while (getNextChar() != '\n') {
                 getNextChar();
             }
-        }else {
-            while (chr != '/'){
+        } else {
+            while (chr != '/') {
                 getNextChar();
             }
         }
@@ -151,8 +164,9 @@ public class Lexer {
 
     /**
      * determines if the character is being used as a negate or subtract operator
+     *
      * @param line the current line in file
-     * @param pos the current postion in the line
+     * @param pos  the current postion in the line
      * @return new token object of eithe token type negate or subtract
      */
     Token negate_or_subtract(int line, int pos) {
@@ -165,8 +179,9 @@ public class Lexer {
 
     /**
      * checks if the current char is part of an identifier, keyword, or an integer
+     *
      * @param line the current line in the file
-     * @param pos the current position on the line
+     * @param pos  the current position on the line
      * @return new token object with a token type of keyword or identifier or integer
      */
     Token identifier_or_integer(int line, int pos) { // handle identifiers and integers
@@ -185,7 +200,7 @@ public class Lexer {
             } else {
                 return new Token(TokenType.Identifier, text, line, pos);
             }
-        }else if (isNumber(chr)){
+        } else if (isNumber(chr)) {
             while (!Character.isWhitespace(chr)) {
                 text += chr;
                 getNextChar();
@@ -200,24 +215,27 @@ public class Lexer {
 
     /**
      * Determines if the current char is a letter, works for both upper and lower case
+     *
      * @param chr the current char
      * @return true if it is a letter, otherwise return false
      */
-    boolean isLetter(char chr){
+    boolean isLetter(char chr) {
         return (64 < (int) chr && (int) chr < 91) || (96 < (int) chr && (int) chr < 123);
     }
 
     /**
      * Determines if the current char is a letter, works for both upper and lower case
+     *
      * @param chr the current char
      * @return true if it is a number, otherwise return false
      */
-    boolean isNumber(char chr){
+    boolean isNumber(char chr) {
         return 47 < (int) chr && (int) chr < 58;
     }
 
     /**
      * checks the current char and determines which token type it is
+     *
      * @return a new Token object for current token
      */
     Token getToken() {
@@ -229,48 +247,69 @@ public class Lexer {
         pos = this.pos;
 
         switch (this.chr) {
-            case '\u0000': return new Token(TokenType.End_of_input, "", this.line, this.pos);
+            case '\u0000':
+                return new Token(TokenType.End_of_input, "", this.line, this.pos);
             // remaining case statements -,",',.
 
-            case '*' : return new Token(TokenType.Op_multiply, "", line, pos);
+            case '*':
+                return new Token(TokenType.Op_multiply, "", line, pos);
 
-            case '/' : return div_or_comment(line, pos);
+            case '/':
+                return div_or_comment(line, pos);
 
-            case '%' : return new Token(TokenType.Op_mod, "", line, pos);
+            case '%':
+                return new Token(TokenType.Op_mod, "", line, pos);
 
-            case '+' : return new Token(TokenType.Op_add, "", line, pos);
+            case '+':
+                return new Token(TokenType.Op_add, "", line, pos);
 
-            case '-' : return negate_or_subtract(line, pos);
+            case '-':
+                return negate_or_subtract(line, pos);
 
-            case '<' : return follow('=', TokenType.Op_lessequal, TokenType.Op_less, line, pos);
+            case '<':
+                return follow('=', TokenType.Op_lessequal, TokenType.Op_less, line, pos);
 
-            case '>' : return follow('=', TokenType.Op_greaterequal, TokenType.Op_greater, line, pos);
+            case '>':
+                return follow('=', TokenType.Op_greaterequal, TokenType.Op_greater, line, pos);
 
-            case '=' : return follow('=', TokenType.Op_equal, TokenType.Op_assign, line, pos);
+            case '=':
+                return follow('=', TokenType.Op_equal, TokenType.Op_assign, line, pos);
 
-            case '!' : return follow('=', TokenType.Op_notequal, TokenType.Op_not, line, pos);
+            case '!':
+                return follow('=', TokenType.Op_notequal, TokenType.Op_not, line, pos);
 
-            case '&' : return follow('&', TokenType.Op_and, TokenType.String, line, pos);
+            case '&':
+                return follow('&', TokenType.Op_and, TokenType.String, line, pos);
 
-            case '|' : return follow('|', TokenType.Op_or, TokenType.String, line, pos);
+            case '|':
+                return follow('|', TokenType.Op_or, TokenType.String, line, pos);
 
-            case '(' : return new Token(TokenType.LeftParen, "", line, pos);
+            case '(':
+                return new Token(TokenType.LeftParen, "", line, pos);
 
-            case ')' : return new Token(TokenType.RightParen, "", line, pos);
+            case ')':
+                return new Token(TokenType.RightParen, "", line, pos);
 
-            case '{' : return new Token(TokenType.LeftBrace, "", line, pos);
+            case '{':
+                return new Token(TokenType.LeftBrace, "", line, pos);
 
-            case '}' : return new Token(TokenType.RightBrace, "", line, pos);
+            case '}':
+                return new Token(TokenType.RightBrace, "", line, pos);
 
-            case ';' : return new Token(TokenType.Semicolon, "", line, pos);
+            case ';':
+                return new Token(TokenType.Semicolon, "", line, pos);
 
-            case ',' : return new Token(TokenType.Comma, "", line, pos);
+            case ',':
+                return new Token(TokenType.Comma, "", line, pos);
 
-            case '\"' : return string_lit(line, pos);
+            case '\"':
+                return string_lit(line, pos);
 
-            case '\'' : return char_lit(line, pos);
+            case '\'':
+                return char_lit(line, pos);
 
-            default: return identifier_or_integer(line, pos);
+            default:
+                return identifier_or_integer(line, pos);
         }
     }
 
@@ -287,6 +326,7 @@ public class Lexer {
     /**
      * checks the next character in the file
      * and increments the position in the file and position in each line
+     *
      * @return the next character
      */
     char getNextChar() {
@@ -316,17 +356,19 @@ public class Lexer {
         }
         sb.append(t);
         System.out.println(t);
-        return sb.toString();
+        return sb.toString().stripTrailing();
     }
 
     /**
      * writes the token, token type, line, and line position of all tokens in a file to a .lex file
-     * @param result the .lex file
+     *
+     * @param result   the .lex file
      * @param fileName the current input file
      */
     static void outputToFile(String result, String fileName) {
         try {
-            FileWriter myWriter = new FileWriter("src/main/resources/" + fileName + ".lex");
+            FileWriter myWriter = new FileWriter("src/main/resources/myLexed" +
+                    fileName.substring(0, fileName.lastIndexOf(".")) + ".lex");
             myWriter.write(result);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
@@ -338,35 +380,35 @@ public class Lexer {
     public static void main(String[] args) {
         //Array list of each file to be used as input
         ArrayList<String> files = new ArrayList<>();
-        files.add("fizzbuzz");
-        files.add("prime");
-        files.add("99bottles");
-        files.add("file1");
-        files.add("file2");
-//        files.add("count");
+        if (args.length > 0) {
+            files.add(args[0]);
+        } else {
+            files.add("fizzbuzz.c");
+            files.add("prime.c");
+            files.add("99bottles.c");
+            files.add("file1.c");
+            files.add("file2.c");
+            files.add("count.c");
+            files.add("hello.t");
+        }
+
         for (int i = 0; i < files.size(); i++) {
             String fileName = files.get(i);
-
-            if (1==1) {
-                try {
-
-                    File f = new File("src/main/resources/" + fileName + ".c");
-                    Scanner s = new Scanner(f);
-                    String source = " ";
-                    String result = " ";
-                    while (s.hasNext()) {
-                        source += s.nextLine() + "\n";
-                    }
-                    Lexer l = new Lexer(source);
-                    result = l.printTokens();
-
-                    outputToFile(result, fileName);
-
-                } catch(FileNotFoundException e) {
-                    error(-1, -1, "Exception: " + e.getMessage());
+            try {
+                File f = new File("src/main/resources/" + fileName);
+                Scanner s = new Scanner(f);
+                String source = " ";
+                String result = " ";
+                while (s.hasNext()) {
+                    source += s.nextLine() + "\n";
                 }
-            } else {
-                error(-1, -1, "No args");
+                Lexer l = new Lexer(source);
+                result = l.printTokens();
+
+                outputToFile(result, fileName);
+
+            } catch (FileNotFoundException e) {
+                error(-1, -1, "Exception: " + e.getMessage());
             }
         }
     }

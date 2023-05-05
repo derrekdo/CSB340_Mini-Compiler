@@ -8,7 +8,7 @@ while (n < limit) {
     k=3;
     p=1;
     n=n+2;
-    while ((k*K<=n) && (p)) {
+    while ((k*k<=n) && (p)) {
         p=n/k*k!=n;
         k=k+2;
     }
