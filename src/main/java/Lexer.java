@@ -356,7 +356,7 @@ public class Lexer {
         }
         sb.append(t);
         System.out.println(t);
-        return sb.toString().stripTrailing();
+        return sb.toString();
     }
 
     /**
@@ -392,8 +392,7 @@ public class Lexer {
             files.add("hello.t");
         }
 
-        for (int i = 0; i < files.size(); i++) {
-            String fileName = files.get(i);
+        for (String fileName : files) {
             try {
                 File f = new File("src/main/resources/" + fileName);
                 Scanner s = new Scanner(f);

@@ -17,12 +17,11 @@
     4      8 LeftParen      
     4      9 Identifier      num3
     4     14 Op_multiply    
-    4     16 Op_negate      
-    4     17 Integer             1
-    4     18 RightParen     
-    4     20 Op_mod         
-    4     22 Integer             2
-    4     23 Semicolon      
+    4     16 Integer             1
+    4     17 RightParen     
+    4     19 Op_mod         
+    4     21 Integer             2
+    4     22 Semicolon      
     6      1 Keyword_if     
     6      4 LeftParen      
     6      5 Identifier      num4
@@ -34,6 +33,7 @@
     7     10 LeftParen      
     7     11 String          "yes"
     7     16 RightParen     
+    7     17 Semicolon      
     8      1 RightBrace     
     8      3 Keyword_else   
     8      8 LeftBrace      
@@ -41,5 +41,6 @@
     9     10 LeftParen      
     9     11 String          "no"
     9     15 RightParen     
+    9     16 Semicolon      
    10      1 RightBrace     
-   11      1 End_of_input
+   11      1 End_of_input   

@@ -2,12 +2,12 @@ Sequence
 Sequence
 ;
 Assign
-Identifier count 
-Integer 1 
+Identifier count
+Integer 1
 While
 Less
-Identifier count 
-Integer 10 
+Identifier count
+Integer 10
 Sequence
 Sequence
 ;
@@ -16,16 +16,16 @@ Sequence
 Sequence
 ;
 Prts
-String "count is: " 
+String "count is: "
 ;
 Prti
-Identifier count 
+Identifier count
 ;
 Prts
-String "\n" 
+String "\n"
 ;
 Assign
-Identifier count 
+Identifier count
 Add
-Identifier count 
-Integer 1 
+Identifier count
+Integer 1

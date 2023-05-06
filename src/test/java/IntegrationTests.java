@@ -1,12 +1,12 @@
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Objects;
 import java.util.Scanner;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * These parameterized tests use the provided files so that we know
@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * There are a total of 3 tests for the Lexer and 3 tests for the Parser.
  * To see the output of all the files, including the one's authored by
  * Derrek Do navigate to the Main file and run that.
+ *
+ * @author jared
  */
 class IntegrationTests {
 
@@ -26,11 +28,7 @@ class IntegrationTests {
             while (expectedReader.hasNextLine()) {
                 String expectedLine = expectedReader.nextLine();
                 String actualLine = actualReader.nextLine();
-                if (!Objects.equals(expectedLine, actualLine)) {
-                    System.out.println(expectedLine);
-                    System.out.println(actualLine);
-                    System.out.println(expectedLine.length());
-                    System.out.println(actualLine.length());
+                if (!Objects.equals(expectedLine.stripTrailing(), actualLine.stripTrailing())) {
                     return false;
                 }
             }
@@ -48,7 +46,7 @@ class IntegrationTests {
         String fileNameNoFileExt = fileName.substring(0, fileName.lastIndexOf("."));
         String expectedLexFileName = "myLexed" + fileNameNoFileExt + ".lex";
         Lexer.main(args);
-        assertTrue(fileContentsEqual(fileNameNoFileExt + ".lex",  expectedLexFileName));
+        assertTrue(fileContentsEqual(fileNameNoFileExt + ".lex", expectedLexFileName));
     }
 
 

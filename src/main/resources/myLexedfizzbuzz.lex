@@ -71,4 +71,4 @@
    15     12 Integer             1
    15     13 Semicolon      
    16      1 RightBrace     
-   17      1 End_of_input
+   17      1 End_of_input   

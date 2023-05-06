@@ -7,6 +7,7 @@ import java.util.*;
 
 /**
  * Syntax Analyzer class
+ *
  * @author (updated by) Jared Scarr
  */
 class Parser {
@@ -25,18 +26,22 @@ class Parser {
             this.right = null;
             this.value = null;
         }
+
         Node(NodeType node_type, Node left, Node right, String value) {
             this.nt = node_type;
             this.left = left;
             this.right = right;
             this.value = value;
         }
+
         public static Node make_node(NodeType nodetype, Node left, Node right) {
             return new Node(nodetype, left, right, "");
         }
+
         public static Node make_node(NodeType nodetype, Node left) {
             return new Node(nodetype, left, null, "");
         }
+
         public static Node make_leaf(NodeType nodetype, String value) {
             return new Node(nodetype, null, null, value);
         }
@@ -49,8 +54,12 @@ class Parser {
         public int pos;
 
         Token(TokenType token, String value, int line, int pos) {
-            this.tokentype = token; this.value = value; this.line = line; this.pos = pos;
+            this.tokentype = token;
+            this.value = value;
+            this.line = line;
+            this.pos = pos;
         }
+
         @Override
         public String toString() {
             return String.format("%5d  %5d %-15s %s", this.line, this.pos, this.tokentype, this.value);
@@ -103,12 +112,28 @@ class Parser {
             this.precedence = precedence;
             this.node_type = node;
         }
-        boolean isRightAssoc() { return this.right_assoc; }
-        boolean isBinary() { return this.is_binary; }
-        boolean isUnary() { return this.is_unary; }
-        int getPrecedence() { return this.precedence; }
-        NodeType getNodeType() { return this.node_type; }
+
+        boolean isRightAssoc() {
+            return this.right_assoc;
+        }
+
+        boolean isBinary() {
+            return this.is_binary;
+        }
+
+        boolean isUnary() {
+            return this.is_unary;
+        }
+
+        int getPrecedence() {
+            return this.precedence;
+        }
+
+        NodeType getNodeType() {
+            return this.node_type;
+        }
     }
+
     static enum NodeType {
         nd_None(""), nd_Ident("Identifier"), nd_String("String"), nd_Integer("Integer"), nd_Sequence("Sequence"), nd_If("If"),
         nd_Prtc("Prtc"), nd_Prts("Prts"), nd_Prti("Prti"), nd_While("While"),
@@ -123,14 +148,17 @@ class Parser {
         }
 
         @Override
-        public String toString() { return this.name; }
+        public String toString() {
+            return this.name;
+        }
     }
 
     /**
      * Print error message.
+     *
      * @param line - line.
-     * @param pos - position.
-     * @param msg - message.
+     * @param pos  - position.
+     * @param msg  - message.
      */
     static void error(int line, int pos, String msg) {
         if (line > 0 && pos > 0) {
@@ -143,6 +171,7 @@ class Parser {
 
     /**
      * Constructor for Parser class.
+     *
      * @param source - list of tokens.
      */
     Parser(List<Token> source) {
@@ -153,6 +182,7 @@ class Parser {
 
     /**
      * Get the next token in the list.
+     *
      * @return - Token
      */
     Token getNextToken() {
@@ -162,6 +192,7 @@ class Parser {
 
     /**
      * create nodes for token types such as LeftParen, Op_add, Op_subtract, etc.
+     *
      * @param precedence - int
      * @return - Node
      */
@@ -212,6 +243,7 @@ class Parser {
 
     /**
      * Handles left and right parenthesis and braces.
+     *
      * @return - Node
      */
     Node parenExpr() {
@@ -225,8 +257,9 @@ class Parser {
     /**
      * Error handler for checking tokens.
      * Check if token is the right type and if not raise an error.
+     *
      * @param msg - string message passed to error handler.
-     * @param s - TokenType
+     * @param s   - TokenType
      */
     void expect(String msg, TokenType s) {
         if (this.token.tokentype == s) {
@@ -238,6 +271,7 @@ class Parser {
 
     /**
      * Handles TokenTypes such as Keyword_if, Keyword_else, nd_If, Keyword_print, etc.
+     *
      * @return - Node
      */
     Node stmt() {
@@ -309,6 +343,7 @@ class Parser {
 
     /**
      * Parses token and returns a Node.
+     *
      * @return - Node
      */
     Node parse() {
@@ -322,12 +357,12 @@ class Parser {
 
     /**
      * Print AST.
-     * @param t - Node.
+     *
+     * @param t  - Node.
      * @param sb - StringBuilder.
      * @return - String representation of AST.
      */
     String printAST(Node t, StringBuilder sb) {
-        int i = 0;
         if (t == null) {
             sb.append(";");
             sb.append("\n");

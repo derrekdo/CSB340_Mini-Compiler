@@ -39,7 +39,7 @@ And
 Multiply
 Identifier k 
 LessEqual
-Identifier K 
+Identifier k 
 Identifier n 
 Identifier p 
 Sequence
