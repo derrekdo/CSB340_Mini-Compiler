@@ -12,6 +12,7 @@
     5      4 Keyword_if     
     5      7 LeftParen      
     5      8 Op_not         
+    5      9 LeftParen      
     5     10 Identifier      i
     5     12 Op_mod         
     5     14 Integer            15
@@ -26,6 +27,7 @@
     7      9 Keyword_if     
     7     12 LeftParen      
     7     13 Op_not         
+    7     14 LeftParen      
     7     15 Identifier      i
     7     17 Op_mod         
     7     19 Integer             3
@@ -40,6 +42,7 @@
     9      9 Keyword_if     
     9     12 LeftParen      
     9     13 Op_not         
+    9     14 LeftParen      
     9     15 Identifier      i
     9     17 Op_mod         
     9     19 Integer             5

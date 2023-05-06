@@ -4,6 +4,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+
+/**
+ * Syntax Analyzer class
+ *
+ * @author (updated by) Jared Scarr
+ */
 class Parser {
     private final List<Token> source;
     private Token token;
@@ -20,18 +26,22 @@ class Parser {
             this.right = null;
             this.value = null;
         }
+
         Node(NodeType node_type, Node left, Node right, String value) {
             this.nt = node_type;
             this.left = left;
             this.right = right;
             this.value = value;
         }
+
         public static Node make_node(NodeType nodetype, Node left, Node right) {
             return new Node(nodetype, left, right, "");
         }
+
         public static Node make_node(NodeType nodetype, Node left) {
             return new Node(nodetype, left, null, "");
         }
+
         public static Node make_leaf(NodeType nodetype, String value) {
             return new Node(nodetype, null, null, value);
         }
@@ -44,8 +54,12 @@ class Parser {
         public int pos;
 
         Token(TokenType token, String value, int line, int pos) {
-            this.tokentype = token; this.value = value; this.line = line; this.pos = pos;
+            this.tokentype = token;
+            this.value = value;
+            this.line = line;
+            this.pos = pos;
         }
+
         @Override
         public String toString() {
             return String.format("%5d  %5d %-15s %s", this.line, this.pos, this.tokentype, this.value);
@@ -98,12 +112,28 @@ class Parser {
             this.precedence = precedence;
             this.node_type = node;
         }
-        boolean isRightAssoc() { return this.right_assoc; }
-        boolean isBinary() { return this.is_binary; }
-        boolean isUnary() { return this.is_unary; }
-        int getPrecedence() { return this.precedence; }
-        NodeType getNodeType() { return this.node_type; }
+
+        boolean isRightAssoc() {
+            return this.right_assoc;
+        }
+
+        boolean isBinary() {
+            return this.is_binary;
+        }
+
+        boolean isUnary() {
+            return this.is_unary;
+        }
+
+        int getPrecedence() {
+            return this.precedence;
+        }
+
+        NodeType getNodeType() {
+            return this.node_type;
+        }
     }
+
     static enum NodeType {
         nd_None(""), nd_Ident("Identifier"), nd_String("String"), nd_Integer("Integer"), nd_Sequence("Sequence"), nd_If("If"),
         nd_Prtc("Prtc"), nd_Prts("Prts"), nd_Prti("Prti"), nd_While("While"),
@@ -118,14 +148,17 @@ class Parser {
         }
 
         @Override
-        public String toString() { return this.name; }
+        public String toString() {
+            return this.name;
+        }
     }
 
     /**
      * Print error message.
+     *
      * @param line - line.
-     * @param pos - position.
-     * @param msg - message.
+     * @param pos  - position.
+     * @param msg  - message.
      */
     static void error(int line, int pos, String msg) {
         if (line > 0 && pos > 0) {
@@ -138,6 +171,7 @@ class Parser {
 
     /**
      * Constructor for Parser class.
+     *
      * @param source - list of tokens.
      */
     Parser(List<Token> source) {
@@ -148,6 +182,7 @@ class Parser {
 
     /**
      * Get the next token in the list.
+     *
      * @return - Token
      */
     Token getNextToken() {
@@ -157,12 +192,11 @@ class Parser {
 
     /**
      * create nodes for token types such as LeftParen, Op_add, Op_subtract, etc.
+     *
      * @param precedence - int
      * @return - Node
      */
     Node expr(int precedence) {
-        // create nodes for token types such as LeftParen, Op_add, Op_subtract, etc.
-        // TODO: be very careful here and be aware of the precedence rules for the AST tree
         Node result = null;
         Node node = null;
         TokenType op = null;
@@ -209,6 +243,7 @@ class Parser {
 
     /**
      * Handles left and right parenthesis and braces.
+     *
      * @return - Node
      */
     Node parenExpr() {
@@ -222,8 +257,9 @@ class Parser {
     /**
      * Error handler for checking tokens.
      * Check if token is the right type and if not raise an error.
+     *
      * @param msg - string message passed to error handler.
-     * @param s - TokenType
+     * @param s   - TokenType
      */
     void expect(String msg, TokenType s) {
         if (this.token.tokentype == s) {
@@ -235,6 +271,7 @@ class Parser {
 
     /**
      * Handles TokenTypes such as Keyword_if, Keyword_else, nd_If, Keyword_print, etc.
+     *
      * @return - Node
      */
     Node stmt() {
@@ -306,6 +343,7 @@ class Parser {
 
     /**
      * Parses token and returns a Node.
+     *
      * @return - Node
      */
     Node parse() {
@@ -319,14 +357,13 @@ class Parser {
 
     /**
      * Print AST.
-     * @param t - Node.
+     *
+     * @param t  - Node.
      * @param sb - StringBuilder.
      * @return - String representation of AST.
      */
     String printAST(Node t, StringBuilder sb) {
-//        System.out.println("In printAST");
-        int i = 0;
-        if (t == null) { // TODO: anytime a null node is encountered it prints this semi colon so I have nulls when I shouldn't
+        if (t == null) {
             sb.append(";");
             sb.append("\n");
             System.out.println(";");
@@ -348,9 +385,11 @@ class Parser {
         return sb.toString();
     }
 
-    static void outputToFile(String result) { // TODO: Add string filename as param
+    static void outputToFile(String result, String filename) {
         try {
-            FileWriter myWriter = new FileWriter("src/main/resources/test_print.par");
+            String nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+            // Prefix filename with "myParsed to leave original files untouched
+            FileWriter myWriter = new FileWriter("src/main/resources/myParsed" + nameWithoutExt + ".par");
             myWriter.write(result);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
@@ -397,8 +436,25 @@ class Parser {
 
 
     public static void main(String[] args) {
+        List<String> fileList = new ArrayList<>();
+        // If input passed to command line process only that file
         if (args.length > 0) {
-            String filename = args[0];
+            fileList.add(args[0]);
+        } else { // else process all files ending in ".lex" in resources
+            File directoryPath = new File("src/main/resources/");
+            String[] contents = directoryPath.list();
+            String fileEnd = "";
+            int fileEndIndex = -1;
+            for (int i = 0; i < Objects.requireNonNull(contents).length; i++) {
+                fileEndIndex = contents[i].lastIndexOf(".");
+                fileEnd = contents[i].substring(fileEndIndex);
+                if (fileEnd.equals(".lex")) {
+                    fileList.add(contents[i]);
+                }
+            }
+        }
+
+        for (String filename : fileList) {
             try {
                 StringBuilder value;
                 String token;
@@ -411,7 +467,7 @@ class Parser {
                 Map<String, TokenType> str_to_tokens = createStringToTokensMap();
 
                 Scanner s = new Scanner(new File("src/main/resources/" + filename));
-                String source = " ";
+
                 while (s.hasNext()) {
                     String str = s.nextLine();
                     StringTokenizer st = new StringTokenizer(str);
@@ -435,14 +491,12 @@ class Parser {
 
                 Parser parser = new Parser(list);
                 result = parser.printAST(parser.parse(), sb);
-                outputToFile(result);
+                outputToFile(result, filename);
             } catch (FileNotFoundException e) {
                 error(-1, -1, "Exception: " + e.getMessage());
             } catch (Exception e) {
                 error(-1, -1, "Exception: " + e.getMessage());
             }
-        } else {
-            error(-1, -1, "No args");
         }
     }
 }
