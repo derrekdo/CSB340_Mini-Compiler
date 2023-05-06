@@ -1,0 +1,41 @@
+Sequence
+Sequence
+Sequence
+;
+Assign
+Identifier input 
+Integer 121 
+Assign
+Identifier input 
+Integer 2424265 
+While
+Equal
+Identifier input 
+Integer 121 
+Sequence
+Sequence
+Sequence
+;
+Sequence
+;
+Prts
+String "ok" 
+;
+Sequence
+;
+Prts
+String "Starting" 
+;
+If
+Greater
+Identifier input 
+Integer 1531 
+If
+Sequence
+;
+Assign
+Identifier input 
+Multiply
+Integer 10 
+Integer 2 
+;

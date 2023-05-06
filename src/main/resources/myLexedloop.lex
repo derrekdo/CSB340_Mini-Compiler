@@ -25,4 +25,4 @@
     4     17 Integer             1
     4     18 Semicolon      
     5      1 RightBrace     
-    6      1 End_of_input
+    6      1 End_of_input   

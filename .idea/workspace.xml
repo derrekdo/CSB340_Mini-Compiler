@@ -5,33 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a7ac25b6-265d-43ed-8230-0c6749f7127e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Lexer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Parser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/99bottles.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/count.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/count.lex" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/count.par" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fizzbuzz.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/hello.lex" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/hello.par" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/hello.t" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/loop.lex" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/loop.par" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/loop.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/prime.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Lexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/file1.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/file1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/file2.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/hello.par" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hello.par" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/loop.par" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/loop.par" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myLexed99bottles.lex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/myLexed99bottles.lex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myLexedcount.lex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/myLexedcount.lex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myLexedfile1.lex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/myLexedfile1.lex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myLexedfile2.lex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myLexedfizzbuzz.lex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/myLexedfizzbuzz.lex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myLexedhello.lex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/myLexedhello.lex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myLexedloop.lex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/myLexedloop.lex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/myParsedmyLexedprime.par" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/myParsedmyLexedprime.par" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/IntegrationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/IntegrationTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +31,23 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="MiniCompiler" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -54,6 +60,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="g2m0aiga" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -63,17 +72,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "last_opened_file_path": "/Users/elloyd/Desktop/NSC/Courses/Spring Courses/Programming Languages/Projects/MiniCompilerProject/src/main/resources",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;js__parser__update&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/jared/Documents/north-seattle-college/spring-2023/csb310-prog-languages/CSB340_Mini-Compiler/src/test/java&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/jared/Documents/north-seattle-college/spring-2023/csb310-prog-languages/CSB340_CPUScheduler&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\jared\Documents\north-seattle-college\spring-2023\csb310-prog-languages\CSB340_Mini-Compiler\src\test\resources" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -86,7 +99,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Parser">
+  <component name="RunManager" selected="JUnit.IntegrationTests">
     <configuration name="Lexer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Lexer" />
       <module name="MiniCompiler.main" />
@@ -94,16 +107,48 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Parser" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Parser" />
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="MiniCompiler.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IntegrationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MiniCompiler.test" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="IntegrationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IntegrationTests.TestParser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MiniCompiler.test" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="IntegrationTests" />
+      <option name="METHOD_NAME" value="TestParser(java.lang.String)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IntegrationTests.testLexer (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MiniCompiler.test" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="IntegrationTests" />
+      <option name="METHOD_NAME" value="testLexer(java.lang.String)" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Parser" />
+        <item itemvalue="JUnit.IntegrationTests" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.IntegrationTests.testLexer (1)" />
+        <item itemvalue="JUnit.IntegrationTests.TestParser" />
         <item itemvalue="Application.Lexer" />
       </list>
     </recent_temporary>

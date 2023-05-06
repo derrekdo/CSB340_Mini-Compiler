@@ -1,0 +1,43 @@
+Sequence
+Sequence
+Sequence
+Sequence
+Sequence
+;
+Assign
+Identifier num1 
+Integer 245 
+Assign
+Identifier num2 
+Integer 153 
+Assign
+Identifier num3 
+Add
+Identifier num1 
+Identifier num2 
+Assign
+Identifier num4 
+Mod
+Multiply
+Identifier num3 
+Integer 1 
+Integer 2 
+If
+GreaterEqual
+Identifier num4 
+Integer 0 
+If
+Sequence
+;
+Sequence
+;
+Prts
+String "yes" 
+;
+Sequence
+;
+Sequence
+;
+Prts
+String "no" 
+;
